@@ -57,6 +57,34 @@ plant_types = {
     "ultrachem": {"substances": ["Ultra-Acid", "Quantum Glass"], "produces": ["Oct-Series", "Nin-Series", "Who-Series"]}
 }
 
+from datetime import datetime, timedelta
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(50), unique=True, nullable=False)
+    password = db.Column(db.String(100), nullable=False)
+    last_claimed = db.Column(db.DateTime, nullable=True)
+    balance = db.Column(db.Float, default=0.0)
+
+@app.route('/claim_loops', methods=['POST'])
+def claim_loops():
+    data = request.json
+    username = data['username']
+    user = User.query.filter_by(username=username).first()
+
+    if user:
+        now = datetime.utcnow()
+        if user.last_claimed is None or now - user.last_claimed > timedelta(days=1):
+            user.balance += 1  # Add one loop
+            user.last_claimed = now
+            db.session.commit()
+            return jsonify({"message": "Claim successful!", "balance": user.balance}), 200
+        else:
+            return jsonify({"message": "You can only claim once every 24 hours."}), 400
+    else:
+        return jsonify({"message": "User not found."}), 404
+
+
 # User Registration
 @app.route('/register', methods=['POST'])
 def register():
