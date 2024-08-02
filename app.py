@@ -46,4 +46,4 @@ def get_plants():
     return jsonify([{'type': p.type, 'production_rate': p.production_rate} for p in plants])
 
 if __name__ == '__main__':
-    app.run(debug=True)
+  app.run(host='0.0.0.0', port=5000, debug=True)
