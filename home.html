@@ -7,23 +7,62 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
         }
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
         }
         .section {
             margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        .section h2 {
+            color: #007bff;
+        }
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .column {
+            flex: 1;
+            min-width: 300px;
         }
         input, button, select {
             margin: 5px 0;
             padding: 10px;
             width: 100%;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
         }
         table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 10px;
         }
         table, th, td {
             border: 1px solid #ddd;
@@ -64,7 +103,7 @@
             padding: 5px;
             position: absolute;
             z-index: 1;
-            bottom: 125%; /* Position above the tooltip text */
+            bottom: 125%;
             left: 50%;
             margin-left: -100px;
             opacity: 0;
@@ -74,118 +113,165 @@
             visibility: visible;
             opacity: 1;
         }
+        nav {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #007bff;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Advanced Plant and Account Management</h1>
+        <nav>
+            <a href="#" onclick="showPage('home')">Home</a>
+            <a href="#" onclick="showPage('about')">About</a>
+            <a href="#" onclick="showPage('instructions')">Instructions</a>
+        </nav>
+        <div id="home" class="page active">
+            <h1>Advanced Plant and Account Management</h1>
+            <div class="row">
+                <!-- User Registration -->
+                <div class="column section">
+                    <h2>Register</h2>
+                    <input type="text" id="register-username" placeholder="Username">
+                    <input type="password" id="register-password" placeholder="Password">
+                    <button onclick="registerUser()">Register</button>
+                </div>
 
-        <!-- User Registration -->
-        <div class="section">
-            <h2>Register</h2>
-            <input type="text" id="register-username" placeholder="Username">
-            <input type="password" id="register-password" placeholder="Password">
-            <button onclick="registerUser()">Register</button>
-        </div>
-
-        <!-- User Login -->
-        <div class="section">
-            <h2>Login</h2>
-            <input type="text" id="login-username" placeholder="Username">
-            <input type="password" id="login-password" placeholder="Password">
-            <button onclick="loginUser()">Login</button>
-        </div>
-
-        <!-- Check Balance -->
-        <div class="section">
-            <h2>Check Balance</h2>
-            <input type="text" id="balance-username" placeholder="Username">
-            <button onclick="checkBalance()">Check Balance</button>
-            <p id="balance-display">Balance: <span id="balance-value">0</span> loops</p>
-        </div>
-
-        <!-- Transaction History -->
-        <div class="section">
-            <h2>Transaction History</h2>
-            <input type="text" id="history-username" placeholder="Username">
-            <button onclick="getTransactionHistory()">Get History</button>
-            <table id="transaction-table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Type</th>
-                        <th>Amount</th>
-                        <th>To</th>
-                        <th>From</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Transaction rows will be inserted here -->
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Make Transaction -->
-        <div class="section">
-            <h2>Make Transaction</h2>
-            <input type="text" id="transaction-from" placeholder="From Username">
-            <input type="text" id="transaction-to" placeholder="To Username">
-            <input type="number" id="transaction-amount" placeholder="Amount">
-            <button onclick="makeTransaction()">Make Transaction</button>
-        </div>
-
-        <!-- Create Plant -->
-        <div class="section">
-            <h2>Create Plant</h2>
-            <input type="text" id="plant-type" placeholder="Plant Type (chem, biochem, ultrachem)">
-            <input type="text" id="plant-substance" placeholder="Substance">
-            <button onclick="createPlant()">Create Plant</button>
-        </div>
-
-        <!-- Control Plant -->
-        <div class="section">
-            <h2>Control Plant</h2>
-            <input type="number" id="control-plant-id" placeholder="Plant ID">
-            
-            <!-- Production Rate -->
-            <div class="slider-container">
-                <label for="production-rate">Production Rate</label>
-                <input type="range" id="production-rate" class="slider" min="1" max="100" step="1" value="50">
-                <p>Value: <span id="production-rate-value" class="indicator">50</span> units per hour</p>
-                <p class="hint">Adjust this slider to control the rate at which your plant produces loops. Higher values increase production but may affect resource consumption.</p>
+                <!-- User Login -->
+                <div class="column section">
+                    <h2>Login</h2>
+                    <input type="text" id="login-username" placeholder="Username">
+                    <input type="password" id="login-password" placeholder="Password">
+                    <button onclick="loginUser()">Login</button>
+                </div>
             </div>
 
-            <!-- Efficiency -->
-            <div class="slider-container">
-                <label for="efficiency">Efficiency</label>
-                <input type="range" id="efficiency" class="slider" min="0" max="100" step="1" value="75">
-                <p>Value: <span id="efficiency-value" class="indicator">75</span>%</p>
-                <p class="hint">Adjust this slider to control the efficiency of your plant. Higher efficiency means better resource usage but might require more maintenance.</p>
+            <div class="row">
+                <!-- Check Balance -->
+                <div class="column section">
+                    <h2>Check Balance</h2>
+                    <input type="text" id="balance-username" placeholder="Username">
+                    <button onclick="checkBalance()">Check Balance</button>
+                    <p id="balance-display">Balance: <span id="balance-value">0</span> loops</p>
+                </div>
+
+                <!-- Transaction History -->
+                <div class="column section">
+                    <h2>Transaction History</h2>
+                    <input type="text" id="history-username" placeholder="Username">
+                    <button onclick="getTransactionHistory()">Get History</button>
+                    <table id="transaction-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>To</th>
+                                <th>From</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Transaction rows will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
-            <!-- Resource Load -->
-            <div class="slider-container">
-                <label for="resource-load">Resource Load</label>
-                <input type="range" id="resource-load" class="slider" min="0" max="100" step="1" value="40">
-                <p>Value: <span id="resource-load-value" class="indicator">40</span>%</p>
-                <p class="hint">Adjust this slider to set the resource load on your plant. Higher values increase loop production but also increase wear and tear.</p>
+            <div class="row">
+                <!-- Make Transaction -->
+                <div class="column section">
+                    <h2>Make Transaction</h2>
+                    <input type="text" id="transaction-from" placeholder="From Username">
+                    <input type="text" id="transaction-to" placeholder="To Username">
+                    <input type="number" id="transaction-amount" placeholder="Amount">
+                    <button onclick="makeTransaction()">Make Transaction</button>
+                </div>
+
+                <!-- Create Plant -->
+                <div class="column section">
+                    <h2>Create Plant</h2>
+                    <input type="text" id="plant-type" placeholder="Plant Type (chem, biochem, ultrachem)">
+                    <input type="text" id="plant-substance" placeholder="Substance">
+                    <button onclick="createPlant()">Create Plant</button>
+                </div>
             </div>
 
-            <!-- Temperature -->
-            <div class="slider-container">
-                <label for="temperature">Temperature</label>
-                <input type="range" id="temperature" class="slider" min="0" max="100" step="1" value="50">
-                <p>Value: <span id="temperature-value" class="indicator">50</span>°C</p>
-                <p class="hint">Control the operational temperature of your plant. Optimal temperatures enhance efficiency, while extreme values can cause malfunctions.</p>
-            </div>
+            <!-- Control Plant -->
+            <div class="section">
+                <h2>Control Plant</h2>
+                <input type="number" id="control-plant-id" placeholder="Plant ID">
+                
+                <!-- Production Rate -->
+                <div class="slider-container">
+                    <label for="production-rate">Production Rate</label>
+                    <input type="range" id="production-rate" class="slider" min="1" max="100" step="1" value="50">
+                    <p>Value: <span id="production-rate-value" class="indicator">50</span> units per hour</p>
+                    <p class="hint">Adjust this slider to control the rate at which your plant produces loops. Higher values increase production but may affect resource consumption.</p>
+                </div>
 
-            <!-- Submit Control Settings -->
-            <button onclick="controlPlant()">Apply Settings</button>
+                <!-- Efficiency -->
+                <div class="slider-container">
+                    <label for="efficiency">Efficiency</label>
+                    <input type="range" id="efficiency" class="slider" min="0" max="100" step="1" value="75">
+                    <p>Value: <span id="efficiency-value" class="indicator">75</span>%</p>
+                    <p class="hint">Adjust this slider to control the efficiency of your plant. Higher efficiency means better resource usage but might require more maintenance.</p>
+                </div>
+
+                <!-- Resource Load -->
+                <div class="slider-container">
+                    <label for="resource-load">Resource Load</label>
+                    <input type="range" id="resource-load" class="slider" min="0" max="100" step="1" value="40">
+                    <p>Value: <span id="resource-load-value" class="indicator">40</span>%</p>
+                    <p class="hint">Adjust this slider to set the resource load on your plant. Higher values increase loop production but also increase wear and tear.</p>
+                </div>
+
+                <!-- Temperature -->
+                <div class="slider-container">
+                    <label for="temperature">Temperature</label>
+                    <input type="range" id="temperature" class="slider" min="0" max="100" step="1" value="50">
+                    <p>Value: <span id="temperature-value" class="indicator">50</span>°C</p>
+                    <p class="hint">Control the operational temperature of your plant. Optimal temperatures enhance efficiency, while extreme values can cause malfunctions.</p>
+                </div>
+
+                <!-- Submit Control Settings -->
+                <button onclick="controlPlant()">Apply Settings</button>
+            </div>
+        </div>
+
+        <div id="about" class="page">
+            <h1>About</h1>
+            <p>This web application allows users to manage their accounts, make transactions, and control various plant parameters.</p>
+            <p>The system supports advanced plant controls, including production rates, efficiency, and resource loads, providing a comprehensive management tool for users.</p>
+        </div>
+
+        <div id="instructions" class="page">
+            <h1>Instructions</h1>
+            <p><strong>Register:</strong> Create a new account by entering a username and password.</p>
+            <p><strong>Login:</strong> Access your account with your username and password.</p>
+            <p><strong>Check Balance:</strong> View the balance of the specified username.</p>
+            <p><strong>Transaction History:</strong> Retrieve and view the transaction history for a specified username.</p>
+            <p><strong>Make Transaction:</strong> Transfer loops from one user to another.</p>
+            <p><strong>Create Plant:</strong> Add a new plant with specified type and substance.</p>
+            <p><strong>Control Plant:</strong> Adjust plant settings such as production rate, efficiency, resource load, and temperature.</p>
         </div>
     </div>
 
     <script>
-        const apiUrl = 'http://86.159.248.238:5001/'; // Replace with your Flask API URL
+        const apiUrl = 'http://86.159.248.238:5001'; // Replace with your public API URL
 
         function registerUser() {
             const username = document.getElementById('register-username').value;
@@ -306,6 +392,14 @@
         document.getElementById('temperature').addEventListener('input', function() {
             document.getElementById('temperature-value').innerText = this.value;
         });
+
+        // Function to show pages
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+        }
     </script>
 </body>
 </html>
