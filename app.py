@@ -92,5 +92,10 @@ def get_balance():
     else:
         return jsonify({"message": "User not found."}), 404
 
+@app.route('/')
+def index():
+    return "Welcome to the Loops API! Available routes: /loops, /plants"
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True)
