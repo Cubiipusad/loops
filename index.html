@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Plant and Account Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        input, button, select {
+            margin: 5px 0;
+            padding: 10px;
+            width: 100%;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .slider-container {
+            margin: 10px 0;
+        }
+        .slider {
+            width: 100%;
+        }
+        .indicator {
+            font-weight: bold;
+        }
+        .hint {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            color: #007bff;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 5px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%; /* Position above the tooltip text */
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Advanced Plant and Account Management</h1>
+
+        <!-- User Registration -->
+        <div class="section">
+            <h2>Register</h2>
+            <input type="text" id="register-username" placeholder="Username">
+            <input type="password" id="register-password" placeholder="Password">
+            <button onclick="registerUser()">Register</button>
+        </div>
+
+        <!-- User Login -->
+        <div class="section">
+            <h2>Login</h2>
+            <input type="text" id="login-username" placeholder="Username">
+            <input type="password" id="login-password" placeholder="Password">
+            <button onclick="loginUser()">Login</button>
+        </div>
+
+        <!-- Check Balance -->
+        <div class="section">
+            <h2>Check Balance</h2>
+            <input type="text" id="balance-username" placeholder="Username">
+            <button onclick="checkBalance()">Check Balance</button>
+            <p id="balance-display">Balance: <span id="balance-value">0</span> loops</p>
+        </div>
+
+        <!-- Transaction History -->
+        <div class="section">
+            <h2>Transaction History</h2>
+            <input type="text" id="history-username" placeholder="Username">
+            <button onclick="getTransactionHistory()">Get History</button>
+            <table id="transaction-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>To</th>
+                        <th>From</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Transaction rows will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Make Transaction -->
+        <div class="section">
+            <h2>Make Transaction</h2>
+            <input type="text" id="transaction-from" placeholder="From Username">
+            <input type="text" id="transaction-to" placeholder="To Username">
+            <input type="number" id="transaction-amount" placeholder="Amount">
+            <button onclick="makeTransaction()">Make Transaction</button>
+        </div>
+
+        <!-- Create Plant -->
+        <div class="section">
+            <h2>Create Plant</h2>
+            <input type="text" id="plant-type" placeholder="Plant Type (chem, biochem, ultrachem)">
+            <input type="text" id="plant-substance" placeholder="Substance">
+            <button onclick="createPlant()">Create Plant</button>
+        </div>
+
+        <!-- Control Plant -->
+        <div class="section">
+            <h2>Control Plant</h2>
+            <input type="number" id="control-plant-id" placeholder="Plant ID">
+            
+            <!-- Production Rate -->
+            <div class="slider-container">
+                <label for="production-rate">Production Rate</label>
+                <input type="range" id="production-rate" class="slider" min="1" max="100" step="1" value="50">
+                <p>Value: <span id="production-rate-value" class="indicator">50</span> units per hour</p>
+                <p class="hint">Adjust this slider to control the rate at which your plant produces loops. Higher values increase production but may affect resource consumption.</p>
+            </div>
+
+            <!-- Efficiency -->
+            <div class="slider-container">
+                <label for="efficiency">Efficiency</label>
+                <input type="range" id="efficiency" class="slider" min="0" max="100" step="1" value="75">
+                <p>Value: <span id="efficiency-value" class="indicator">75</span>%</p>
+                <p class="hint">Adjust this slider to control the efficiency of your plant. Higher efficiency means better resource usage but might require more maintenance.</p>
+            </div>
+
+            <!-- Resource Load -->
+            <div class="slider-container">
+                <label for="resource-load">Resource Load</label>
+                <input type="range" id="resource-load" class="slider" min="0" max="100" step="1" value="40">
+                <p>Value: <span id="resource-load-value" class="indicator">40</span>%</p>
+                <p class="hint">Adjust this slider to set the resource load on your plant. Higher values increase loop production but also increase wear and tear.</p>
+            </div>
+
+            <!-- Temperature -->
+            <div class="slider-container">
+                <label for="temperature">Temperature</label>
+                <input type="range" id="temperature" class="slider" min="0" max="100" step="1" value="50">
+                <p>Value: <span id="temperature-value" class="indicator">50</span>°C</p>
+                <p class="hint">Control the operational temperature of your plant. Optimal temperatures enhance efficiency, while extreme values can cause malfunctions.</p>
+            </div>
+
+            <!-- Submit Control Settings -->
+            <button onclick="controlPlant()">Apply Settings</button>
+        </div>
+    </div>
+
+    <script>
+        const apiUrl = 'http://86.159.248.238:5001/'; // Replace with your Flask API URL
+
+        function registerUser() {
+            const username = document.getElementById('register-username').value;
+            const password = document.getElementById('register-password').value;
+            fetch(`${apiUrl}/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message));
+        }
+
+        function loginUser() {
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            fetch(`${apiUrl}/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Login successful!');
+                } else {
+                    alert('Login failed!');
+                }
+            });
+        }
+
+        function checkBalance() {
+            const username = document.getElementById('balance-username').value;
+            fetch(`${apiUrl}/balance/${username}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('balance-value').innerText = data.balance;
+            });
+        }
+
+        function getTransactionHistory() {
+            const username = document.getElementById('history-username').value;
+            fetch(`${apiUrl}/transactions/${username}`)
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.getElementById('transaction-table').getElementsByTagName('tbody')[0];
+                tableBody.innerHTML = ''; // Clear previous entries
+                data.transactions.forEach(tx => {
+                    const row = tableBody.insertRow();
+                    row.insertCell(0).innerText = tx.date;
+                    row.insertCell(1).innerText = tx.type;
+                    row.insertCell(2).innerText = tx.amount;
+                    row.insertCell(3).innerText = tx.to;
+                    row.insertCell(4).innerText = tx.from;
+                });
+            });
+        }
+
+        function makeTransaction() {
+            const from = document.getElementById('transaction-from').value;
+            const to = document.getElementById('transaction-to').value;
+            const amount = document.getElementById('transaction-amount').value;
+            fetch(`${apiUrl}/make_transaction`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ from, to, amount })
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message));
+        }
+
+        function createPlant() {
+            const type = document.getElementById('plant-type').value;
+            const substance = document.getElementById('plant-substance').value;
+            fetch(`${apiUrl}/create_plant`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type, substance, produces: "Tri-Series", production_rate: 50 }) // Example values
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message));
+        }
+
+        function controlPlant() {
+            const plantId = document.getElementById('control-plant-id').value;
+            const productionRate = document.getElementById('production-rate').value;
+            const efficiency = document.getElementById('efficiency').value;
+            const resourceLoad = document.getElementById('resource-load').value;
+            const temperature = document.getElementById('temperature').value;
+
+            fetch(`${apiUrl}/control_plant/${plantId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    production_rate: productionRate,
+                    efficiency: efficiency,
+                    resource_load: resourceLoad,
+                    temperature: temperature
+                })
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message));
+        }
+
+        // Update indicator values as sliders move
+        document.getElementById('production-rate').addEventListener('input', function() {
+            document.getElementById('production-rate-value').innerText = this.value;
+        });
+
+        document.getElementById('efficiency').addEventListener('input', function() {
+            document.getElementById('efficiency-value').innerText = this.value;
+        });
+
+        document.getElementById('resource-load').addEventListener('input', function() {
+            document.getElementById('resource-load-value').innerText = this.value;
+        });
+
+        document.getElementById('temperature').addEventListener('input', function() {
+            document.getElementById('temperature-value').innerText = this.value;
+        });
+    </script>
+</body>
+</html>
+
